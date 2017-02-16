@@ -1,12 +1,8 @@
-﻿using CSSDK;
+﻿using Microsoft.SmartFactory.Devices.Client;
 using Microsoft.Azure.Devices.Client;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,7 +17,6 @@ namespace SmartFactoryDeviceSample
             string DEVICE_ID = ConfigurationManager.AppSettings["Device.Id"];
             string DEVICE_PASSWORD = ConfigurationManager.AppSettings["Device.Password"];
             string CERTIFICATE_PATH = ConfigurationManager.AppSettings["CertificatePath"];// It can be null or empty if the x509 certificate did not be used.
-            string LOG_FILE_NAME = ConfigurationManager.AppSettings["LogFileName"];
 
             try
             {
@@ -39,8 +34,6 @@ namespace SmartFactoryDeviceSample
                 /* Async Task for the Cloud to Device message receiving */
                 ReceiveCloudToDeviceMessageAsync();
 
-                /* Async Task for the log uploading*/
-                UploadLogAsync(LOG_FILE_NAME);
             }
             catch (Exception ex)
             {
@@ -57,7 +50,7 @@ namespace SmartFactoryDeviceSample
 
         static async void SendTelemetryBySchemaAsync()
         {
-            int companyId = [Please put your COMPANY ID here...]; // You can get the company id from JSON template            
+            int companyId = [Please put your COMPANY ID here...]; // You can get the company id from JSON template
 
             int messageCount = 5;
             try
@@ -125,7 +118,7 @@ namespace SmartFactoryDeviceSample
                     deviceMessage.Add("RPM-expectd", 5400);
                     Random rand = new Random();
                     int seed = rand.Next() % 101;
-                    deviceMessage.Add("RPM-actual", 5350+ seed);
+                    deviceMessage.Add("RPM-actual", 5350 + seed);
                     deviceMessage.Add("CoolingSystemWarning", false);// Optional, it can be ignored
                     break;
                 case 45:
@@ -157,27 +150,6 @@ namespace SmartFactoryDeviceSample
                 Console.ResetColor();
 
                 await _sfDeviceClient.CompleteAsync(receivedMessage);
-            }
-        }
-
-        static async void UploadLogAsync(string fileName)
-        {
-            Console.WriteLine("UploadLogAsync: fileName={0}", fileName);
-
-            FileInfo fi = new FileInfo(fileName);
-            if (fi.Exists)
-            {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
-
-                await _sfDeviceClient.uploadLog(fi);
-
-                sw.Stop();
-                Console.WriteLine("{0} has been uploaded in {1} ms", fi.Name, sw.ElapsedMilliseconds);
-            }
-            else
-            {
-                Console.WriteLine("UPLOADED LOG FILE NOT FOUND. fileName={0}", fileName);
             }
         }
     }
