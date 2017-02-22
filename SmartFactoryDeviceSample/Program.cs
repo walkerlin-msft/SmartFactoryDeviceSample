@@ -20,6 +20,8 @@ namespace SmartFactoryDeviceSample
 
             try
             {
+                Console.WriteLine("DEVICE_ID={0}, DEVICE_PASSWORD={1}", DEVICE_ID, DEVICE_PASSWORD);
+
                 HwProductKey hwProductKey = HwProductKey.CreateHwProductKey(DEVICE_ID, DEVICE_PASSWORD);
 
                 /* Create the instance of SfDeviceClient */
@@ -33,6 +35,9 @@ namespace SmartFactoryDeviceSample
 
                 /* Async Task for the Cloud to Device message receiving */
                 ReceiveCloudToDeviceMessageAsync();
+
+                /* Async Task for the file upload */
+                UploadFlieAsync();
 
             }
             catch (Exception ex)
@@ -150,6 +155,25 @@ namespace SmartFactoryDeviceSample
                 Console.ResetColor();
 
                 await _sfDeviceClient.CompleteAsync(receivedMessage);
+            }
+        }
+
+        static async void UploadFlieAsync()
+        {
+            string fileName = "screenshot.png";
+            string filePath = "C:\\temp\\" + fileName;
+            string blobName = DateTime.Now.ToString("yyyyMMdd_HHmmss") + "_" + fileName;
+
+            try
+            {
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+                await _sfDeviceClient.UploadFileToBlob(filePath, blobName);
+                watch.Stop();
+                Console.WriteLine("blobName={0}, Time to upload file: {1}ms\n", blobName, watch.ElapsedMilliseconds);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("UploadFlieAsync Exception: {0}", ex.Message.ToString());
             }
         }
     }
