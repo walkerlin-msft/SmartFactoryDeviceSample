@@ -5,6 +5,7 @@ using System;
 using System.Configuration;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.SmartFactory.Devices.Client.Enums;
 
 namespace SmartFactoryDeviceSample
 {
@@ -114,7 +115,7 @@ namespace SmartFactoryDeviceSample
             deviceMessage.Add("companyId", companyId);
             deviceMessage.Add("msgTimestamp", DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"));
             deviceMessage.Add("equipmentId", equipmentId);
-            deviceMessage.Add("equipmentRunStatus", 1);
+            deviceMessage.Add("equipmentRunStatus", (int)EquipmentRunStatus.Run);
 
             switch (messageCatalogId)
             {
