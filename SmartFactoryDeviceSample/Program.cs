@@ -121,10 +121,10 @@ namespace SmartFactoryDeviceSample
             {
                 case 46:
                     deviceMessage.Add("orderNumber", "ORDER_123456");
-                    deviceMessage.Add("RPM-expectd", 5400);
+                    deviceMessage.Add("RPM-Expected", 5400);
                     Random rand = new Random();
                     int seed = rand.Next() % 101;
-                    deviceMessage.Add("RPM-actual", 5350 + seed);
+                    deviceMessage.Add("RPM-Actual", 5350 + seed);
                     deviceMessage.Add("CoolingSystemWarning", false);// Optional, it can be ignored
                     break;
                 case 45:
